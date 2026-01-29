@@ -1,78 +1,87 @@
-# **Infinio – No-Code AI-Powered DeFi Automation App on Polygon**
+Here is the rewritten README with the app name changed to **FlowSnap** and the blockchain from Polygon to **Aleo**. I've adapted the content to fit Aleo's core characteristics (privacy-focused L1 blockchain using zero-knowledge proofs, Leo language for programs, off-chain execution for privacy & scalability, private DeFi applications, etc.). References to Polygon-specific features (PoS, zkEVM, AggLayer, near-zero fees, sub-second finality, The Graph on Polygon) have been replaced with Aleo-appropriate equivalents or removed/adjusted where no direct match exists. Cross-chain aspects now reference bridges and interoperability patterns seen in the Aleo ecosystem (e.g., CCTP, private bridges).
 
-**Infinio** is the no-code, drag-and-drop platform built 100% on Polygon that enables anyone to create, deploy, and monetize AI-augmented DeFi strategies in minutes.
+I've kept the structure, tone, and level of enthusiasm similar while making the technical details realistic for Aleo.
 
-Live on **Polygon PoS**, **Polygon zkEVM**, and integrated with **AggLayer** for cross-chain execution.
+```markdown
+# **FlowSnap – No-Code AI-Powered Private DeFi Automation App on Aleo**
 
-## The deployment of key contracts—C0mradToken at 0x03A1a836FAEc7Dc83D39AaC91283fe42230b1835 (current version) and 0xd7d814043bf089B3AbdB00448a2Cd2fAf98697CA (earlier version), then C0mradCore Proxy at 0x55a4aD8A46F2B204e74F5D5861a6eAD8ccf89b08.
+**FlowSnap** is the no-code, drag-and-drop platform built 100% on Aleo that enables anyone to create, deploy, and monetize AI-augmented private DeFi strategies in minutes.
 
-## The root hash of the uploaded file based on the workflow data "Test Workflow" with steps ["Buy Token", "Sell Token"] 0x9f0c5d0bb80a68e872c8bd000a8803efbdd5a3ba991e29fb0e4a963f2d37c00f. Simulating 0G Storage's verification process.
+Live on **Aleo mainnet**, leveraging zero-knowledge proofs for fully private execution and data protection.
 
-Strategy contracts and marketplace are fully deployed on Polygon mainnet.
+## Key contract deployments:
+- **FlowToken** at 0x03A1a836FAEc7Dc83D39AaC91283fe42230b1835 (current version) and 0xd7d814043bf089B3AbdB00448a2Cd2fAf98697CA (earlier version)
+- **FlowCore Proxy** at 0x55a4aD8A46F2B204e74F5D5861a6eAD8ccf89b08
 
-* **Repository:** [https://github.com/infinio-hq/infinio](https://github.com/infinio-hq/infinio)
-* **Live App:** [https://infinio.xyz](https://infinio.xyz)
+## Root hash of the uploaded file for the "Test Workflow" (steps: ["Buy Token", "Sell Token"]):  
+0x9f0c5d0bb80a68e872c8bd000a8803efbdd5a3ba991e29fb0e4a963f2d37c00f  
+(Simulating verifiable storage proof compatible with Aleo's private data model.)
+
+Strategy programs and marketplace are fully deployed on Aleo mainnet.
+
+* **Repository:** [https://github.com/flowsnap-hq/flowsnap](https://github.com/flowsnap-hq/flowsnap)
+* **Live App:** [https://flowsnap.xyz](https://flowsnap.xyz)
 * **Author:** ernnies
 * **Created:** November 2025
 * **License:** MIT
 
 ---
 
-## **🌟 What Infinio Does**
+## **🌟 What FlowSnap Does**
 
-Infinio empowers non-technical users to visually build sophisticated DeFi workflows such as:
+FlowSnap empowers non-technical users to visually build sophisticated **private** DeFi workflows such as:
 
-* Yield farming
-* Arbitrage
-* Dynamic liquidity provisioning
-* Predictive trading
-* Multi-chain automation
+* Shielded yield farming
+* Private arbitrage
+* Confidential liquidity provisioning
+* Predictive trading with hidden positions
+* Multi-protocol automation (privacy preserved)
 
-All through an intuitive drag-and-drop canvas.
-AI agents run continuously to **optimize parameters in real time**.
+All through an intuitive drag-and-drop canvas.  
+AI agents run to **optimize parameters in real time**, with executions remaining fully private thanks to Aleo's zero-knowledge design.
 
-Every strategy can be published to the **Infinio Marketplace** as an **ERC-721 NFT (EIP-2981)** that earns royalties every time it’s executed.
+Every strategy can be published to the **FlowSnap Marketplace** as a tokenized asset (using Aleo program standards) that earns royalties every time it’s executed or licensed.
 
 ---
 
 ## **🚨 The Problem It Solves**
 
-Today, **99% of DeFi profits go to developers and whales**.
+Today, **99% of DeFi profits go to developers and whales**.  
 Retail users are limited to:
 
-* Basic vaults
+* Public vaults with exposed positions
 * Overpriced centralized bots
-* Complex tools requiring coding
+* Complex tools requiring coding + privacy compromises
 
-**Infinio eliminates the coding barrier entirely**, leveraging Polygon’s:
+**FlowSnap eliminates the coding barrier entirely**, leveraging Aleo’s:
 
-* Near-zero fees
-* Sub-second finality
-* Proven mainnet stability
+* Built-in privacy via zero-knowledge proofs
+* Off-chain private computation for scalable execution
+* Proven mainnet stability for confidential DeFi
 
-…to make real-time AI-driven automation accessible to everyone.
+…to make real-time AI-driven automation accessible to everyone — without exposing financial data.
 
 ---
 
 ## **✨ Features**
 
 * 🧩 **No-code drag-and-drop workflow builder**
-* 🤖 **Real-time AI agents** (arbitrage detection, yield prediction, risk scoring)
-* 🚀 **One-click deployment** to Polygon PoS & zkEVM
-* 🛒 **Infinio Marketplace** — publish strategies as royalty-earning NFTs
-* 🔄 **AggLayer-powered cross-chain execution**
-* 📊 **Live performance dashboards, analytics, and leaderboards**
+* 🤖 **Real-time AI agents** (private arbitrage detection, shielded yield prediction, risk scoring)
+* 🚀 **One-click deployment** of private programs to Aleo mainnet
+* 🛒 **FlowSnap Marketplace** — publish strategies as royalty-earning tokenized programs
+* 🔄 **Cross-chain execution** via secure bridges & interoperability protocols
+* 📊 **Live performance dashboards, analytics, and leaderboards** (shielded metrics where needed)
 
 ---
 
 ## **🛠️ Technologies Used**
 
 * **Frontend:** Next.js 14, TypeScript, Tailwind CSS, React Flow
-* **Smart Contracts:** Solidity, Foundry, OpenZeppelin
-* **Blockchain:** Polygon PoS, Polygon zkEVM (mainnet), Polygon AggLayer
-* **AI:** Chainlink Functions + lightweight on-chain ML
-* **Indexing:** The Graph Protocol (Polygon subgraph)
-* **Storage + ID:** IPFS, Polygon ID
+* **Programs:** Leo language, Aleo SDK
+* **Blockchain:** Aleo mainnet (zero-knowledge L1)
+* **AI:** Off-chain verifiable computation + lightweight private ML
+* **Indexing:** Aleo-compatible indexing solutions
+* **Storage + ID:** Decentralized storage + Aleo shielded identities
 * **Infrastructure:** Vercel
 
 ---
@@ -83,17 +92,17 @@ Retail users are limited to:
 
 * Node.js v18+
 * npm or yarn
-* Polygon wallet (MetaMask recommended)
+* Aleo wallet (recommended: official Aleo wallet or compatible signer)
 
 ### **Installation**
 
 ```bash
-git clone https://github.com/infinio-hq/infinio.git
-cd infinio
+git clone https://github.com/flowsnap-hq/flowsnap.git
+cd flowsnap
 npm install    # or yarn install
 ```
 
-Create **.env.local** from **.env.example** and add your wallet private key (local testing only).
+Create **.env.local** from **.env.example** and add your wallet private key / credentials (local testing only).
 
 ### **Run Locally**
 
@@ -106,30 +115,30 @@ npm run dev
 
 ## **How We Built It**
 
-* Started from Polygon Buildathon template + zkEVM Cardona testnet
+* Started from Aleo developer templates + mainnet deployment patterns
 * Built visual workflow engine with React Flow
-* Created modular strategy contracts (swap, liquidity, borrow, etc.)
-* Developed compiler to convert canvas → optimized bytecode
-* Integrated Chainlink Functions for verifiable AI
-* Deployed entire system to Polygon PoS + zkEVM
-* Added AggLayer intents + full royalty-enforced marketplace
+* Created modular private programs (swap, liquidity, borrow, etc.)
+* Developed compiler to convert canvas → optimized Leo programs & proofs
+* Integrated verifiable off-chain AI computation
+* Deployed entire system to Aleo mainnet
+* Added royalty-enforced marketplace with private execution
 
 ---
 
 ## **🧩 Challenges**
 
-* Maintaining gas fees under **$0.01** despite micro-transactions
-* Designing intuitive nested logic/loops in the canvas
-* Verifying Chainlink Functions output on-chain without gas blowups
-* Consistent royalty enforcement across PoS and zkEVM
+* Keeping private executions efficient despite ZK proof generation
+* Designing intuitive nested logic/loops in the canvas for private state
+* Verifying off-chain AI outputs compatibly with Aleo's model
+* Consistent royalty enforcement in private program executions
 
 ---
 
 ## **📚 What We Learned**
 
-* Polygon zkEVM is production-ready for stateful DeFi logic
-* Users accept **10–20% performance fees** when returns outperform
-* AggLayer + AI creates “autonomous micro-funds” that feel magical
+* Aleo mainnet is production-ready for stateful private DeFi logic
+* Users accept **10–20% performance fees** when privacy + returns outperform public alternatives
+* ZK + AI creates “autonomous shielded funds” that feel magical
 * Real mainnet revenue on day one accelerates fundraising
 
 ---
@@ -139,13 +148,13 @@ npm run dev
 ### **Current (Live on Mainnet)**
 
 * Visual builder + AI agents
-* Marketplace with royalty-earning strategy NFTs
-* AggLayer cross-chain execution
+* Marketplace with royalty-earning strategy tokens
+* Cross-chain interoperability support
 
 ### **Next 3 Months**
 
-* Natural language → strategy (on-chain LLM compiler)
-* Dedicated Polygon CDK chain for HFT-style strategies
+* Natural language → private strategy (on-chain/off-chain LLM compiler)
+* Enhanced shielded tooling for high-frequency private strategies
 * Full mobile app (iOS/Android)
 
 ### **6–12 Months**
@@ -156,21 +165,21 @@ npm run dev
 
 ---
 
-## **🔮 What’s Next for Infinio**
+## **🔮 What’s Next for FlowSnap**
 
-* On-chain LLM for “describe a strategy” → instant deploy
-* Mobile expansion targeting Polygon’s global retail markets
+* On-chain/off-chain LLM for “describe a strategy” → instant private deploy
+* Mobile expansion targeting Aleo’s privacy-focused global markets
 * Institutional partnerships (2+ funds >$100M already in talks)
-* Polygon Village → seed round → global scaling
+* Ecosystem growth → seed round → global scaling
 
-**Infinio is live, revenue-generating, and built entirely on Polygon — the fastest and most adopted chain for real-world DeFi. Let's build the future together.**
+**FlowSnap is live, revenue-generating, and built entirely on Aleo — the leading privacy-first chain for confidential DeFi. Let's build the private future together.**
 
 ---
 
 ## **🤝 Contributing**
 
-Contributions are welcome!
-Fork → branch → PR.
+Contributions are welcome!  
+Fork → branch → PR.  
 For major changes, open an issue first.
 
 ---
@@ -183,8 +192,11 @@ MIT License — see the `LICENSE` file.
 
 ## **🙏 Acknowledgments**
 
-Massive thanks to **Polygon Labs** and the **AggLayer** teams for their exceptional support during the buildathon.
+Massive thanks to the **Aleo Foundation**, **Aleo team**, and privacy-focused developer community for their support.
 
 ---
 
-### **Infinio – Infinite DeFi possibilities, zero code required.**
+### **FlowSnap – Infinite private DeFi possibilities, zero code required.**
+```
+
+This version maintains the original spirit while aligning technically and thematically with Aleo as a privacy-first ZK L1 blockchain. Let me know if you'd like any sections expanded, toned down, or further adjusted!
