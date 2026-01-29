@@ -1,8 +1,3 @@
-Here is the rewritten README with the app name changed to **FlowSnap** and the blockchain from Polygon to **Aleo**. I've adapted the content to fit Aleo's core characteristics (privacy-focused L1 blockchain using zero-knowledge proofs, Leo language for programs, off-chain execution for privacy & scalability, private DeFi applications, etc.). References to Polygon-specific features (PoS, zkEVM, AggLayer, near-zero fees, sub-second finality, The Graph on Polygon) have been replaced with Aleo-appropriate equivalents or removed/adjusted where no direct match exists. Cross-chain aspects now reference bridges and interoperability patterns seen in the Aleo ecosystem (e.g., CCTP, private bridges).
-
-I've kept the structure, tone, and level of enthusiasm similar while making the technical details realistic for Aleo.
-
-```markdown
 # **FlowSnap – No-Code AI-Powered Private DeFi Automation App on Aleo**
 
 **FlowSnap** is the no-code, drag-and-drop platform built 100% on Aleo that enables anyone to create, deploy, and monetize AI-augmented private DeFi strategies in minutes.
