@@ -193,5 +193,3 @@ Massive thanks to the **Aleo Foundation**, **Aleo team**, and privacy-focused de
 
 ### **FlowSnap – Infinite private DeFi possibilities, zero code required.**
 ```
-
-This version maintains the original spirit while aligning technically and thematically with Aleo as a privacy-first ZK L1 blockchain. Let me know if you'd like any sections expanded, toned down, or further adjusted!
