@@ -10,7 +10,7 @@ export default function Home() {
       {/* Navigation */}
       <nav className="bg-white shadow-md py-4">
         <div className="container mx-auto px-4 flex justify-between items-center">
-          <div className="text-2xl font-semibold text-blue-700">Infinio</div>
+          <div className="text-2xl font-semibold text-blue-700">FlowSnap</div>
           <div className="space-x-6">
             <Link href="/features" className="text-blue-600 hover:text-gold-500 transition duration-300">
               Features
@@ -28,7 +28,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="py-20 bg-gradient-to-r from-blue-100 to-white">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-5xl font-bold text-gray-900 mb-6">Welcome to Infinio</h1>
+          <h1 className="text-5xl font-bold text-gray-900 mb-6">Welcome to FlowSnap</h1>
           <p className="text-lg max-w-2xl mx-auto mb-8 text-gray-700">
             A no-code DeFi automation app built on Aleo&apos;s decentralized
             blockchain, empowering users with AI-driven trading workflows.
