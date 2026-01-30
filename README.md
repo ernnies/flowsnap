@@ -15,7 +15,7 @@ Live on **Aleo mainnet**, leveraging zero-knowledge proofs for fully private exe
 Strategy programs and marketplace are fully deployed on Aleo mainnet.
 
 * **Repository:** [https://github.com/flowsnap-hq/flowsnap](https://github.com/flowsnap-hq/flowsnap)
-* **Live App:** [https://flowsnap.xyz](https://flowsnap.xyz)
+* **Live App:** [https://flowsnap.vercel.app](https://flowsnap.vercel.app)
 * **Author:** ernnies
 * **Created:** November 2025
 * **License:** MIT
