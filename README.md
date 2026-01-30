@@ -90,7 +90,7 @@ Retail users are limited to:
 ### **Installation**
 
 ```bash
-git clone https://github.com/flowsnap-hq/flowsnap.git
+git clone https://github.com/ernnies/flowsnap.git
 cd flowsnap
 npm install    # or yarn install
 ```
