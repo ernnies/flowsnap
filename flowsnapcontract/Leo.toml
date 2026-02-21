@@ -1,0 +1,37 @@
+[program]
+name = "flowsnap_contracts"
+version = "0.1.0"
+description = "Smart contracts (Leo programs) for FlowSnap: No-Code AI-Powered DeFi Automation Platform on Aleo"
+license = "MIT"
+edition = "2024"           
+leo = "1.10.0"             
+
+authors = ["Ernnies <@Ernnies191860>"]
+repository = "https://github.com/ernnies/flowsnap-aleo"   # ← change to your repo if exists
+
+# =============================================
+# Dependencies
+# =============================================
+# These are other Aleo programs your code imports
+# Use "local" for local folders, "git" for remote, "network" for published on-chain programs
+
+[dependencies]
+
+# Standard Aleo native token (usually already available)
+credits = { location = "network" }
+
+# If you're using any community token standards or libraries
+# token-registry = { git = "https://github.com/ProvableHQ/token-registry", rev = "main" }   # example
+
+# If you split common utilities into a separate local program (optional)
+# common = { path = "./src/common" }
+
+# If you depend on external DEXes, voting, etc. (add when you actually import them)
+# aleoswap = { git = "https://github.com/aleoswap-labs/aleoswap", rev = "main" }   # example
+
+# =============================================
+# Development dependencies (optional)
+# Usually not needed unless you have separate test helpers
+# =============================================
+[dev-dependencies]
+# test-utils = { path = "./tests/utils" }   # if you have shared test helpers
