@@ -1,80 +1,181 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.24;
+// flow_core.leo
+// Core workflow registry & execution orchestrator for FlowSnap on Aleo
+// Heavily simplified - no upgradeability, no full roles, fixed-size steps array
 
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+program flow_core.aleo {
 
-contract C0mradCore is Initializable, UUPSUpgradeable, AccessControlUpgradeable {
-    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
-    bytes32 public constant EXECUTOR_ROLE = keccak256("EXECUTOR_ROLE");
+    // =============================================
+    // Constants
+    // =============================================
 
+    const MAX_STEPS: u32 = 16u32;               // Fixed max steps per workflow
+    const MAX_RISK: u128 = 100u128;
+
+    // =============================================
+    // Structs & Records
+    // =============================================
+
+    // Workflow definition (public - workflows are typically visible)
     struct Workflow {
-        address owner;
-        string name;
-        string[] steps;
-        uint256 createdAt;
-        uint256 lastExecuted;
-        bool isActive;
-        uint256 riskScore;
-        uint256 sustainabilityScore;
+        owner: address,
+        name: string,
+        steps: [string; 16],        // fixed size - pad with "" if fewer steps
+        steps_len: u32,             // actual number of meaningful steps
+        created_at: u64,
+        last_executed: u64,
+        is_active: bool,
+        risk_score: u128,
+        sustainability_score: u128,
     }
 
-    mapping(uint256 => Workflow) public workflows;
-    mapping(address => uint256[]) public userWorkflows;
-    uint256 public workflowCount;
+    // Public storage
+    mapping workflows: u64 => Workflow.public;
 
-    event WorkflowCreated(uint256 id, address owner, string name);
-    event WorkflowExecuted(uint256 id, uint256 timestamp);
+    mapping workflow_count: bool => u64.public;  // single-key total count
 
-    function initialize() public initializer {
-        __UUPSUpgradeable_init();
-        __AccessControl_init();
-        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
-        _grantRole(ADMIN_ROLE, msg.sender);
+    mapping user_workflows: address => [u64; 32].public;  // per-user list, fixed size
+    mapping user_workflows_len: address => u32.public;
+
+    // =============================================
+    // Initialization (optional - can be called once)
+    // =============================================
+
+    transition initialize() {
+        // In production: restrict to deployer via caller check
+        let zero: u64 = 0u64;
+        Mapping::set(workflow_count, true, zero);
+        // Could set other defaults here
     }
 
-    function createWorkflow(string memory name, string[] memory steps) external returns (uint256) {
-        uint256 id = ++workflowCount;
-        workflows[id] = Workflow({
-            owner: msg.sender,
+    // =============================================
+    // Create a new workflow (anyone can propose/register)
+    // =============================================
+
+    transition create_workflow(
+        name: string,
+        steps: [string; 16],
+        steps_len: u32
+    ) -> u64 {
+        assert(steps_len <= MAX_STEPS, "Too many steps");
+
+        let caller: address = self.caller;
+        let current_time: u64 = self.now;
+
+        let current_count: u64 = Mapping::get_or_default(workflow_count, true, 0u64);
+        let new_id: u64 = current_count + 1u64;
+
+        // Simplified risk & sustainability calculation
+        let (risk, sustain) = calculate_scores(steps, steps_len);
+
+        let new_workflow: Workflow = Workflow {
+            owner: caller,
             name: name,
             steps: steps,
-            createdAt: block.timestamp,
-            lastExecuted: 0,
-            isActive: true,
-            riskScore: _calculateRisk(steps),
-            sustainabilityScore: _calculateSustainability(steps)
+            steps_len: steps_len,
+            created_at: current_time,
+            last_executed: 0u64,
+            is_active: true,
+            risk_score: risk,
+            sustainability_score: sustain,
+        };
+
+        Mapping::set(workflows, new_id, new_workflow);
+        Mapping::set(workflow_count, true, new_id);
+
+        // Append to user's list (fixed size - truncate if full)
+        let user_len: u32 = Mapping::get_or_default(user_workflows_len, caller, 0u32);
+        if (user_len < 32u32) {
+            let mut user_list: [u64; 32] = Mapping::get_or_default(user_workflows, caller, [0u64; 32]);
+            user_list[user_len as u64] = new_id;
+            Mapping::set(user_workflows, caller, user_list);
+            Mapping::set(user_workflows_len, caller, user_len + 1u32);
+        }
+
+        return new_id;
+    }
+
+    // =============================================
+    // Execute / update last_executed timestamp
+    // In production: restrict via governance approval or role check
+    // =============================================
+
+    transition execute_workflow(id: u64) {
+        let caller: address = self.caller;
+        let current_time: u64 = self.now;
+
+        let wf_opt = Mapping::get(workflows, id);
+        assert(wf_opt.is_some(), "Workflow does not exist");
+
+        let mut wf: Workflow = wf_opt.unwrap();
+
+        assert(wf.is_active, "Workflow is inactive");
+        // assert(has_executor_role(caller), "Not executor"); // ← add real check later
+
+        wf.last_executed = current_time;
+
+        Mapping::set(workflows, id, wf);
+    }
+
+    // =============================================
+    // Internal: simplified score calculation
+    // No keccak256(string) - use direct comparison or enum in real app
+    // =============================================
+
+    function calculate_scores(
+        steps: [string; 16],
+        len: u32
+    ) -> (u128, u128) {
+
+        let mut risk: u128 = 0u128;
+        let mut sustainability: u128 = 100u128;
+
+        let mut i: u32 = 0u32;
+        while (i < len) {
+            let step: string = steps[i as u64];
+
+            // Very basic string matching (Leo strings support ==)
+            if (step == "FlashLoan") {
+                risk += 30u128;
+            } else if (step == "Leverage") {
+                risk += 25u128;
+            }
+
+            if (step == "HighGas") {
+                sustainability -= 20u128;
+            }
+
+            i += 1u32;
+        }
+
+        if (risk > MAX_RISK) {
+            risk = MAX_RISK;
+        }
+        if (sustainability < 0u128) {
+            sustainability = 0u128;
+        }
+
+        return (risk, sustainability);
+    }
+
+    // =============================================
+    // View helpers
+    // =============================================
+
+    transition get_workflow(id: u64) -> Workflow {
+        return Mapping::get_or_default(workflows, id, Workflow {
+            owner: aleo1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq5l2m3v, // zero-ish fallback
+            name: "",
+            steps: [""; 16],
+            steps_len: 0u32,
+            created_at: 0u64,
+            last_executed: 0u64,
+            is_active: false,
+            risk_score: 0u128,
+            sustainability_score: 0u128,
         });
-        userWorkflows[msg.sender].push(id);
-        emit WorkflowCreated(id, msg.sender, name);
-        return id;
     }
 
-    function executeWorkflow(uint256 id) external onlyRole(EXECUTOR_ROLE) {
-        require(workflows[id].isActive, "Inactive workflow");
-        workflows[id].lastExecuted = block.timestamp;
-        emit WorkflowExecuted(id, block.timestamp);
+    transition get_workflow_count() -> u64 {
+        return Mapping::get_or_default(workflow_count, true, 0u64);
     }
-
-    function _calculateRisk(string[] memory steps) internal pure returns (uint256) {
-        uint256 risk = 0;
-        for (uint i = 0; i < steps.length; i++) {
-            if (keccak256(bytes(steps[i])) == keccak256("FlashLoan")) risk += 30;
-            if (keccak256(bytes(steps[i])) == keccak256("Leverage")) risk += 25;
-        }
-        return risk > 100 ? 100 : risk;
-    }
-
-    function _calculateSustainability(string[] memory steps) internal pure returns (uint256) {
-        uint256 score = 100;
-        for (uint i = 0; i < steps.length; i++) {
-            if (keccak256(bytes(steps[i])) == keccak256("HighGas")) score -= 20;
-        }
-        return score < 0 ? 0 : score;
-    }
-
-    function _authorizeUpgrade(address) internal override onlyRole(ADMIN_ROLE) {}
 }

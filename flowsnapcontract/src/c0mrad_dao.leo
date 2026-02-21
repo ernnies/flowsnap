@@ -1,204 +1,174 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.24;
+// c0mrad_dao.leo
+// Simplified governance + workflow registry for FlowSnap on Aleo
+// No full OZ Governor logic — voting would be handled by a separate/importable voting program
 
-import "@openzeppelin/contracts/governance/Governor.sol";
-import "@openzeppelin/contracts/governance/IGovernor.sol";
-import "@openzeppelin/contracts/governance/extensions/GovernorSettings.sol";
-import "@openzeppelin/contracts/governance/extensions/GovernorCountingSimple.sol";
-import "@openzeppelin/contracts/governance/extensions/GovernorVotes.sol";
-import "@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFraction.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
-import "./core/interfaces/IC0mradCore.sol";
+program c0mrad_dao.aleo {
 
-contract C0mradDAO is 
-    Governor,
-    GovernorSettings,
-    GovernorCountingSimple,
-    GovernorVotes,
-    GovernorVotesQuorumFraction,
-    IC0mradCore
-{
-    mapping(uint256 => IC0mradCore.Workflow) private _workflows;
-    uint256 private _workflowCount;
-    mapping(address => uint256[]) private _userWorkflows;
+    // =============================================
+    // Constants & Types
+    // =============================================
 
-    event WorkflowCreated(uint256 indexed workflowId, string name, address owner);
+    // Using string for names/steps (Leo strings are UTF-8 bytes)
+    // In production you might use fixed-size arrays or hashes for efficiency
 
-    constructor(IVotes _token)
-        Governor("C0mradDAO")
-        GovernorSettings(1, 45818, 0)
-        GovernorVotes(_token)
-        GovernorVotesQuorumFraction(4)
-    {}
-
-    /* ========== C0MRAD CORE GETTERS ========== */
-
-    function workflows(uint256 id) 
-        public 
-        view 
-        override 
-        returns (IC0mradCore.Workflow memory) 
-    {
-        return _workflows[id];
+    struct WorkflowStep {
+        // Simplified — real version might have more fields (target, calldata hash, etc.)
+        action_type: u8,     // 0=swap, 1=add_liquidity, etc.
+        // ... more params as needed
     }
 
-    function workflowCount() 
-        public 
-        view 
-        override 
-        returns (uint256) 
-    {
-        return _workflowCount;
+    record Workflow {
+        owner: address,
+        name: string,
+        steps: [string; 16],     // fixed max length array — adjust as needed
+        steps_len: u32,          // actual number of steps used
+        created_at: u64,
+        last_executed: u64,
+        is_active: bool,
+        risk_score: u8,
+        sustainability_score: u8,
+        _nonce: group,           // required for records
     }
 
-    function userWorkflows(address user) 
-        public 
-        view 
-        override 
-        returns (uint256[] memory) 
-    {
-        return _userWorkflows[user];
+    // Public mappings (workflows are typically public data)
+    mapping workflows: u64 => Workflow.public;
+
+    mapping workflow_count: bool => u64.public;  // single key hack → total count
+
+    mapping user_workflows: address => [u64; 32].public;  // per-user list (fixed size — production use merkle or separate program)
+    mapping user_workflows_len: address => u32.public;
+
+    // Simple proposal record (very basic — real governance needs more)
+    record Proposal {
+        proposer: address,
+        workflow_name: string,
+        description_hash: field,   // hash of description
+        created_at: u64,
+        approved: bool,
+        _nonce: group,
     }
 
-    /* ========== PROPOSAL LOGIC ========== */
+    mapping proposals: u64 => Proposal.public;
+    mapping proposal_count: bool => u64.public;
 
-    function proposeTemplate(
-        string memory name,
-        string[] memory steps
-    ) public returns (uint256) 
-    {
-        string memory description = string(
-            abi.encodePacked("Proposal: Add workflow -> ", name)
-        );
+    // =============================================
+    // Helper / View-like logic (transitions that don't mutate)
+    // =============================================
 
-        // Properly declare proposal arrays
-        address[] memory targets = new address[](1);
-        uint256[] memory values = new uint256[](1);
-        bytes[] memory calldatas = new bytes[](1);
-
-        targets[0] = address(this);
-        values[0] = 0;
-        calldatas[0] = abi.encodeWithSignature(
-            "createWorkflow(string,string[])",
-            name,
-            steps
-        );
-
-        return propose(targets, values, calldatas, description);
-    }
-
-    function createWorkflow(
-        string memory name,
-        string[] memory steps
-    ) external override onlyGovernance returns (uint256) 
-    {
-        _workflowCount++;
-        _workflows[_workflowCount] = IC0mradCore.Workflow({
-            owner: msg.sender,
-            name: name,
-            steps: steps,
-            createdAt: block.timestamp,
-            lastExecuted: 0,
-            isActive: true,
-            riskScore: 0,
-            sustainabilityScore: 0
+    transition get_workflow(id: u64) -> Workflow {
+        let wf: Workflow = Mapping::get_or_default(workflows, id, Workflow {
+            owner: aleo1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq5l2m3v, // zero address fallback
+            name: "",
+            steps: [""; 16],
+            steps_len: 0u32,
+            created_at: 0u64,
+            last_executed: 0u64,
+            is_active: false,
+            risk_score: 0u8,
+            sustainability_score: 0u8,
+            _nonce: Group::zero(),
         });
 
-        _userWorkflows[msg.sender].push(_workflowCount);
-
-        emit WorkflowCreated(_workflowCount, name, msg.sender);
-        return _workflowCount;
+        return wf;
     }
 
-    function executeWorkflow(uint256 id) external override {
-        require(id > 0 && id <= _workflowCount, "Invalid workflow ID");
-        require(_workflows[id].isActive, "Inactive workflow");
-        require(_workflows[id].owner == msg.sender, "Not workflow owner");
-
-        _workflows[id].lastExecuted = block.timestamp;
+    transition get_workflow_count() -> u64 {
+        return Mapping::get_or_default(workflow_count, true, 0u64);
     }
 
-    function initialize() external override {}
+    // =============================================
+    // Propose a new workflow template (public action)
+    // =============================================
 
-    /* ========== REQUIRED GOVERNOR OVERRIDES (OZ v5) ========== */
+    transition propose_workflow_template(
+        name: string,
+        steps: [string; 16],
+        steps_len: u32
+    ) {
+        // In real system: create Proposal record → vote on it → if approved → call create_workflow
+        // Here we simplify: direct creation (governance mocked)
 
-    function quorum(uint256 blockNumber)
-        public
-        view
-        override(IGovernor, GovernorVotesQuorumFraction)
-        returns (uint256)
-    {
-        return super.quorum(blockNumber);
+        let caller: address = self.caller;
+        let current_time: u64 = self.now;   // block timestamp equivalent
+
+        let current_count: u64 = Mapping::get_or_default(workflow_count, true, 0u64);
+        let new_id: u64 = current_count + 1u64;
+
+        let new_workflow: Workflow = Workflow {
+            owner: caller,
+            name: name,
+            steps: steps,
+            steps_len: steps_len,
+            created_at: current_time,
+            last_executed: 0u64,
+            is_active: true,
+            risk_score: 0u8,
+            sustainability_score: 0u8,
+            _nonce: Group::rand(self),
+        };
+
+        Mapping::set(workflows, new_id, new_workflow);
+        Mapping::set(workflow_count, true, new_id);
+
+        // Append to user list (simplified — fixed array, production needs better structure)
+        let user_len: u32 = Mapping::get_or_default(user_workflows_len, caller, 0u32);
+        if (user_len < 32u32) {
+            let mut list: [u64; 32] = Mapping::get_or_default(user_workflows, caller, [0u64; 32]);
+            list[user_len as u64] = new_id;
+            Mapping::set(user_workflows, caller, list);
+            Mapping::set(user_workflows_len, caller, user_len + 1u32);
+        }
+
+        // In real DAO: emit event equivalent via output or on-chain record
     }
 
-    function votingDelay()
-        public
-        view
-        override(IGovernor, GovernorSettings)
-        returns (uint256)
-    {
-        return super.votingDelay();
+    // =============================================
+    // Execute / touch a workflow (owner only)
+    // =============================================
+
+    transition execute_workflow(id: u64) {
+        let caller: address = self.caller;
+        let current_time: u64 = self.now;
+
+        let wf_opt: Workflow = Mapping::get(workflows, id);
+        assert(wf_opt.is_some(), "Workflow does not exist");
+
+        let mut wf: Workflow = wf_opt.unwrap();
+
+        assert(wf.is_active, "Workflow is inactive");
+        assert(wf.owner == caller, "Not workflow owner");
+
+        wf.last_executed = current_time;
+
+        Mapping::set(workflows, id, wf);
     }
 
-    function votingPeriod()
-        public
-        view
-        override(IGovernor, GovernorSettings)
-        returns (uint256)
-    {
-        return super.votingPeriod();
+    // =============================================
+    // Placeholder for governance approval (mock)
+    // In production: integrate with vote.leo style logic or external DAO
+    // =============================================
+
+    transition approve_proposal(proposal_id: u64) {
+        // Mock — real version would check voting result
+        // You would typically have a separate voting program that outputs approval
+        let prop_opt = Mapping::get(proposals, proposal_id);
+        assert(prop_opt.is_some(), "Proposal does not exist");
+
+        let mut prop: Proposal = prop_opt.unwrap();
+        prop.approved = true;
+        Mapping::set(proposals, proposal_id, prop);
+
+        // Then call create_workflow or similar...
     }
 
-    function proposalThreshold()
-        public
-        view
-        override(Governor, GovernorSettings)
-        returns (uint256)
-    {
-        return super.proposalThreshold();
-    }
+    // =============================================
+    // Initialization (optional — usually not needed)
+    // =============================================
 
-    function state(uint256 proposalId)
-        public
-        view
-        override(Governor)
-        returns (ProposalState)
-    {
-        return super.state(proposalId);
-    }
-
-    function _execute(
-        uint256 proposalId,
-        address[] memory targets,
-        uint256[] memory values,
-        bytes[] memory calldatas,
-        bytes32 descriptionHash
-    )
-        internal
-        override(Governor)
-    {
-        super._execute(proposalId, targets, values, calldatas, descriptionHash);
-    }
-
-    function _cancel(
-        address[] memory targets,
-        uint256[] memory values,
-        bytes[] memory calldatas,
-        bytes32 descriptionHash
-    )
-        internal
-        override(Governor)
-        returns (uint256)
-    {
-        return super._cancel(targets, values, calldatas, descriptionHash);
-    }
-
-    function supportsInterface(bytes4 interfaceId)
-        public
-        view
-        override(Governor)
-        returns (bool)
-    {
-        return super.supportsInterface(interfaceId);
+    transition initialize() {
+        // Can be called once to set initial state if needed
+        let zero: u64 = 0u64;
+        Mapping::set(workflow_count, true, zero);
+        Mapping::set(proposal_count, true, zero);
     }
 }
