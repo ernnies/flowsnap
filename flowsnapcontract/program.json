@@ -1,0 +1,16 @@
+{
+  "program": "flowsnap_contracts.aleo",
+  "version": "0.1.0",
+  "description": "FlowSnap - No-Code AI-Powered DeFi Automation Platform on Aleo",
+  "license": "MIT",
+  "leo": "1.10.0",
+  "dependencies": [
+    {
+      "name": "credits.aleo",
+      "location": "network",
+      "path": null,
+      "edition": null
+    }
+  ],
+  "dev_dependencies": []
+}
