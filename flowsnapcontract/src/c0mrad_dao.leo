@@ -1,15 +1,9 @@
-// c0mrad_dao.leo
-// Simplified governance + workflow registry for FlowSnap on Aleo
-// No full OZ Governor logic — voting would be handled by a separate/importable voting program
 
 program c0mrad_dao.aleo {
 
     // =============================================
     // Constants & Types
     // =============================================
-
-    // Using string for names/steps (Leo strings are UTF-8 bytes)
-    // In production you might use fixed-size arrays or hashes for efficiency
 
     struct WorkflowStep {
         // Simplified — real version might have more fields (target, calldata hash, etc.)
@@ -57,7 +51,7 @@ program c0mrad_dao.aleo {
 
     transition get_workflow(id: u64) -> Workflow {
         let wf: Workflow = Mapping::get_or_default(workflows, id, Workflow {
-            owner: aleo1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq5l2m3v, // zero address fallback
+            owner: aleo1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq5l2m3v, // 
             name: "",
             steps: [""; 16],
             steps_len: 0u32,

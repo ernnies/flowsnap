@@ -1,7 +1,7 @@
 require('dotenv').config();
 const { ProgramManager, AleoKeyProvider } = require('@provablehq/aleo-sdk');
 
-const PRIVATE_KEY = process.env.PRIVATE_KEY; // aleo1... format
+const PRIVATE_KEY = process.env.PRIVATE_KEY; 
 
 if (!PRIVATE_KEY) {
   throw new Error("PRIVATE_KEY not set in .env");
@@ -38,7 +38,7 @@ async function main() {
 
       // Deploy
       const tx = await programManager.deployProgram(name, path, {
-        fee: 500000,           // in microcredits – adjust based on network
+        fee: 500000,          
         feePrivate: false,
       });
 

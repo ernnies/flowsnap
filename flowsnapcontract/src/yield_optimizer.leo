@@ -1,7 +1,3 @@
-// yield_optimizer.aleo
-// Simplified yield rebalancer for FlowSnap on Aleo
-// Assumes integration with a DEX like AleoSwap (ARC-20 + Uniswap-style swaps)
-// Swap logic calls external DEX transitions; real version would use pair-specific calls
 
 import aleoswap.aleo;          // Example DEX program (from https://github.com/aleoswap-labs/aleoswap)
 // OR import alphaswap.aleo;  // Alternative DEX

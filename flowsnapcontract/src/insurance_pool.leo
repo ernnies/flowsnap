@@ -1,19 +1,9 @@
-// insurance_pool.aleo
-// Simplified insurance / contribution pool for FlowSnap on Aleo
-// Uses private position records + public total pool tracking
-// Assumes token transfers via token_registry.aleo (ARC-20 style hub)
 
-import token_registry.aleo;   // Standard token registry (recommended)
-// OR import your_custom_token.aleo if using standalone ARC-20
+import token_registry.aleo;   
 
 program insurance_pool.aleo {
 
-    // =============================================
-    // Constants & Types
-    // =============================================
-
-    // Token program ID (the premiumToken equivalent)
-    // In production: set via initialize or governance
+    
     constant PREMIUM_TOKEN_PROGRAM: program_id = token_registry.aleo;
 
     // Private user contribution position (shielded)
@@ -39,23 +29,17 @@ program insurance_pool.aleo {
         Mapping::set(total_pool, true, zero);
     }
 
-    // =============================================
-    // Add contribution to the pool (deposit)
-    // =============================================
+    
 
     async transition add_contribution(
-        private input_token: token_registry.aleo/TokenRecord,   // from registry or ARC-20
+        private input_token: token_registry.aleo/TokenRecord,   
         public amount: u128
     ) -> (Contribution, Future) {
 
         let caller: address = self.caller;
         assert(amount > 0u128, "Amount must be greater than 0");
 
-        // =============================================
-        // Off-chain: assume token transfer happened via registry call
-        // In real code: call token_registry.transfer(...) first in bundle
-        // Here we just check ownership & amount
-        // =============================================
+        
         assert(input_token.owner == caller, "Not token owner");
         assert(input_token.amount >= amount, "Insufficient token amount");
 
@@ -89,9 +73,7 @@ program insurance_pool.aleo {
         Mapping::set(public_contributions, contributor, current_user + amount);
     }
 
-    // =============================================
-    // Process / claim from the pool
-    // =============================================
+    
 
     async transition process_claim(
         private contribution: Contribution,

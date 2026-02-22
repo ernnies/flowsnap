@@ -1,5 +1,3 @@
-// tests/risk_engine_test.leo
-// Unit tests for risk_engine.aleo
 
 import risk_engine.aleo;
 import flow_core.aleo;

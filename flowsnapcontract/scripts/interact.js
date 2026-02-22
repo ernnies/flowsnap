@@ -6,7 +6,7 @@ async function main() {
   const pk = PrivateKey.from_string(process.env.PRIVATE_KEY);
   await manager.setAccount(pk.to_string());
 
-  const programId = "flow_core.aleo"; // or full program ID after deploy
+  const programId = "flow_core.aleo"; 
 
   console.log("Creating test workflow...");
 

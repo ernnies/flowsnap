@@ -1,6 +1,3 @@
-// rwa_factory.aleo
-// Real-World Asset (RWA) NFT Factory for FlowSnap / C0mrad on Aleo
-// Follows ARC-721 principles: private NFT ownership + optional public metadata
 
 program rwa_factory.aleo {
 

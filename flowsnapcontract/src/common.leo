@@ -1,6 +1,3 @@
-// common.leo
-// Shared utilities, structs, constants, and helpers for FlowSnap programs on Aleo
-// Import this in other .leo files: import common.leo;
 
 program common.aleo {  // Note: even helpers live inside a dummy program declaration
 
@@ -15,8 +12,7 @@ program common.aleo {  // Note: even helpers live inside a dummy program declara
     const TOKEN_DECIMALS: u8 = 6u8;          // common for CMR, etc.
     const ZERO_ADDRESS: address = aleo1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq5l2m3v;
 
-    // Precomputed keccak256 hashes for common step names (compute once off-chain)
-    // Replace with actual keccak256(utf8 bytes) values
+
     const HASH_FLASHLOAN: field = 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdeffield; // ← REAL VALUE
     const HASH_LEVERAGE:   field = 0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890field; // ← REAL VALUE
     const HASH_HIGHGAS:    field = 0x7890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456field; // ← REAL VALUE

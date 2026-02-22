@@ -1,5 +1,3 @@
-// tests/yield_optimizer_test.leo
-// Basic tests for yield_optimizer.aleo (simplified — assumes no real DEX integration)
 
 import yield_optimizer.aleo;
 import common.aleo;

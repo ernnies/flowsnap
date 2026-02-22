@@ -1,12 +1,7 @@
-// flow_core.leo
-// Core workflow registry & execution orchestrator for FlowSnap on Aleo
-// Heavily simplified - no upgradeability, no full roles, fixed-size steps array
 
 program flow_core.aleo {
 
-    // =============================================
-    // Constants
-    // =============================================
+   
 
     const MAX_STEPS: u32 = 16u32;               // Fixed max steps per workflow
     const MAX_RISK: u128 = 100u128;

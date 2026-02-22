@@ -1,5 +1,3 @@
-// tests/flow_core_test.leo
-// Basic unit tests for flow_core.aleo
 
 import flow_core.aleo;
 import common.aleo;

@@ -1,6 +1,3 @@
-// risk_engine.aleo
-// Risk assessment engine for FlowSnap workflows on Aleo
-// Simplified - uses keccak256 for step matching; in production prefer enum or off-chain precompute
 
 import flow_core.aleo;     // to read public workflows mapping
 
@@ -12,10 +9,6 @@ program risk_engine.aleo {
 
     const MAX_RISK: u128 = 100u128;
 
-    // Precomputed keccak256 hashes of common step names (compute off-chain once)
-    // In Leo you can compute them in a transition if needed, but constants are better
-    // These are placeholders — replace with actual keccak256("FlashLoan") etc.
-    // Use tools like ethers.js or python keccak to get real values
     const HASH_FLASHLOAN: field  = 1234567890123456789012345678901234567890123456789012345678901234field;   // ← REPLACE
     const HASH_LEVERAGE:   field = 9876543210987654321098765432109876543210987654321098765432109876field;   // ← REPLACE
     const HASH_HIGHGAS:    field = 1122334455667788990011223344556677889900112233445566778899001122field;   // ← REPLACE

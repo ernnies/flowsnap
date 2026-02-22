@@ -1,9 +1,4 @@
-// c0mrad_token.leo
-// Simplified governance/utility token for FlowSnap / C0mradDAO on Aleo
-// Public balances + private shielded balances
-// Basic voting power tracking (non-delegated, updates on transfer)
-
-import credits.aleo;  // optional - if you want to interact with native credits
+import credits.aleo;  
 
 program c0mrad_token.aleo {
 
@@ -14,9 +9,8 @@ program c0mrad_token.aleo {
     const TOTAL_INITIAL_SUPPLY: u128 = 1000000u128;  // 1,000,000 CMR
     const DECIMALS: u8 = 6u8;                        // like 10**6 in Solidity
 
-    // Admin/owner address (set at deployment time - in real use, use a governance program to control)
-    // For simplicity: hardcoded or passed in initialize (not ideal for production)
-    const ADMIN: address = aleo1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx;  // ← REPLACE with actual deployer
+    
+    const ADMIN: address = aleo1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx;  // 
 
     // =============================================
     // Storage
